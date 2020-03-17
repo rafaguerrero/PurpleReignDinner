@@ -6,7 +6,8 @@ class NewPlan extends Component {
   state = {
     location: null,
     success: false,
-    error: null
+    error: null,
+    id: 0
   };
 
   createId = () => {
@@ -14,12 +15,12 @@ class NewPlan extends Component {
   };
 
   createNewPlan = (location) => {
-    let path = `plan_${this.createId()}`;
+    let id = this.createId();
 
-    this.setState({ path: path });
+    this.setState({ id: id });
 
     axios.post("http://localhost:3001/api/putData", {
-      path: path,
+      id: id,
       location: location,
       options: [],
       voters: 0,
@@ -27,7 +28,10 @@ class NewPlan extends Component {
     })
     .then(res => { return !!res.json ? res.json() : res.data; })
     .then((res) => {
-      this.setState({ success: res.success, error: res.error.message });
+      this.setState({ 
+        success: res.success, 
+        error: res.error && res.error.message 
+      });
     })
   };
 
@@ -47,8 +51,8 @@ class NewPlan extends Component {
         </div>
 
         {this.state.success && (
-            <Link to={`/${this.state.path}`}> 
-              Create new plan successfull - {this.state.path} 
+            <Link to={`/plan/${this.state.id}`}> 
+              Create new plan successfull - {this.state.id} 
             </Link>
         )}
 

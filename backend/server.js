@@ -39,9 +39,9 @@ router.get('/getAllData', (req, res) => {
 });
 
 router.post('/getData', (req, res) => {
-  const { path } = req.body;
+  const { id } = req.body;
 
-  Plan.findOne({ path: path }, (err, data) => {
+  Plan.findOne({ id: id }, (err, data) => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true, data: data });
   });
@@ -72,9 +72,9 @@ router.delete('/deleteData', (req, res) => {
 router.post('/putData', (req, res) => {
   let plan = new Plan();
 
-  const { path, location } = req.body;
+  const { id, location } = req.body;
 
-  plan.path = path;
+  plan.id = id;
   plan.location = location;
   plan.save((err) => {
     if (err) return res.json({ success: false, error: err });

@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 // this will be our data base's data structure 
 const PlanSchema = new Schema(
   {
-    path: { type: String, unique: true, required : true },
+    id: { type: Number, unique: true, required : true }, // unique not working fine
     location: { type: Number,  required :true },
     options: Array,
     voters: Number,

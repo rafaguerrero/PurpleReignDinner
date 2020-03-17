@@ -38,9 +38,9 @@ class Home extends Component {
           {data.length <= 0
             ? "NO DINNER PLANS YET"
             : data.map(dat => (
-                <li style={{ padding: "10px" }} key={data.path}>
-                  <Link to={`/${dat.path}`}>
-                    Plan -> {dat.path}
+                <li style={{ padding: "10px" }} key={data.id}>
+                  <Link to={`/plan/${dat.id}`}>
+                    Plan -> {dat.id}
                   </Link>
                 </li>
           ))}
