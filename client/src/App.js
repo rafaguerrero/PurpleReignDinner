@@ -4,15 +4,17 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Plan from "./views/Plan";
 import Home from "./views/Home";
 import NewPlan from "./views/NewPlan";
+import NotFound from "./views/NotFound";
 
 class App extends Component {
   render() {
     return (
       <Router>
         <Switch>
-          <Route exact path="/" children={<Home />} />
-          <Route exact path="/new_plan" children={<NewPlan />} />
-          <Route path="/plan/:id" children={<Plan />} />
+          <Route exact path="/" component={Home} />
+          <Route exact path="/new_plan" component={NewPlan} />
+          <Route path="/plan/:id" component={Plan} />
+          <Route component={NotFound} />
         </Switch>
       </Router>
     );
