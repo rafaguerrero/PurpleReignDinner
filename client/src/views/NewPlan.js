@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import axios from 'axios';
 import { Link } from "react-router-dom";
+import RestaurantsJson from "../_temp/Restaurants";
 
 class NewPlan extends Component {
   state = {
     location: null,
     success: false,
     error: null,
-    id: 0
+    id: 0,
+    loading: false
   };
 
   createId = () => {
@@ -17,18 +19,24 @@ class NewPlan extends Component {
   createNewPlan = (location) => {
     let id = this.createId();
 
-    this.setState({ id: id });
+    this.setState({ 
+      id: id,
+      loading: true,
+      success: false,
+      error: false
+    });
 
     axios.post("http://localhost:3001/api/putData", {
       id: id,
       location: location,
-      options: [],
+      options: RestaurantsJson,
       voters: 0,
       votes: [],
     })
     .then(res => { return !!res.json ? res.json() : res.data; })
     .then((res) => {
       this.setState({ 
+        loading: false,
         success: res.success, 
         error: res.error && res.error.message 
       });
@@ -49,6 +57,10 @@ class NewPlan extends Component {
             />
           <button onClick={() => this.createNewPlan(this.state.location)}>CREATE DINNER PLAN</button>
         </div>
+
+        {this.state.loading && (
+            <p>Creating new plan</p>
+        )}
 
         {this.state.success && (
             <Link to={`/plan/${this.state.id}`}> 

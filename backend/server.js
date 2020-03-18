@@ -72,10 +72,11 @@ router.delete('/deleteData', (req, res) => {
 router.post('/putData', (req, res) => {
   let plan = new Plan();
 
-  const { id, location } = req.body;
+  const { id, location, options } = req.body;
 
   plan.id = id;
   plan.location = location;
+  plan.options = options;
   plan.save((err) => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true });

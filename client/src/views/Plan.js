@@ -1,14 +1,16 @@
 import React, { Component } from "react";
 import axios from 'axios';
 import NotFound from "./NotFound";
+import { Link } from "react-router-dom";
+import Vote from "../components/Vote";
+import PlanInfo from "../components/PlanInfo";
 
 class Plan extends Component {
   state = {
     id: 0,
     data: null,
     success: false,
-    error: null,
-    intervalIsSet: false
+    error: null
   };
 
   componentDidMount() {
@@ -26,44 +28,39 @@ class Plan extends Component {
         success: res.success,
         error: res.error
       });
+    }).catch((error) => {
+      this.setState({ 
+        data: null,
+        success: false,
+        error: error
+      }); 
     })
   }
 
   render() {
-    const { data } = this.state;
-
     if(this.state.success && this.state.data == null) {
       return (<NotFound/>);
-    }
+    } else if(!!this.state.error) {
+      return (<div>
+                <h3>Sorry there was an error</h3>
+                <p>{this.status.error.message}</p>
+              </div>);
+    } else if(!!this.state.vote) {
+      return(<Vote planData={this.state.data}/>);
+    } else if(!!this.state.info) {
+      return(<PlanInfo planData={this.state.data}/>);
+    } 
 
     return (
       <div>
-        <h3>ID: {this.state.id}</h3>
-
-        {this.state.success && (
-          <div>
-            <h4>DATA</h4>
-            <ul>
-                <li>Location : {data.location}</li>
-                <li>Options : {data.options.length}</li>
-                {(data.options.length < 0) &&
-                  data.options.map(dat => (
-                    <li class="sublist" key={data.name}>{dat.name}</li>
-                  )
-                )}
-                <li>Votes : {data.votes.length}</li>
-                {(data.votes.length < 0) &&
-                  data.votes.map(dat => (
-                    <li class="sublist" key={data.name}>{dat.name}</li>
-                  )
-                )}
-            </ul>
-          </div>
-        )}
-
-        {(!!this.state.error) && (
-            <p>{this.state.error.message}</p>
-        )}
+        <ul>
+          <li>
+            <button onClick={() => this.setState({vote : true})}>Vote</button>
+          </li>
+          <li>
+            <button onClick={() => this.setState({info : true})}>Info</button>
+          </li>
+        </ul>
       </div>
     );
   }
