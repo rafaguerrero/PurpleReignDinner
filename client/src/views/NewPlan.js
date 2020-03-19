@@ -29,8 +29,7 @@ class NewPlan extends Component {
     axios.post("http://localhost:3001/api/putData", {
       id: id,
       location: location,
-      options: RestaurantsJson,
-      voters: 0,
+      restaurants: RestaurantsJson,
       votes: [],
     })
     .then(res => { return !!res.json ? res.json() : res.data; })

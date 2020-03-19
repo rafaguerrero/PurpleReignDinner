@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import axios from 'axios';
 import NotFound from "./NotFound";
-import { Link } from "react-router-dom";
 import Vote from "../components/Vote";
 import PlanInfo from "../components/PlanInfo";
 
@@ -37,6 +36,10 @@ class Plan extends Component {
     })
   }
 
+  getBack = () => {
+    this.setState({ vote: false, info: false });
+  }
+
   render() {
     if(this.state.success && this.state.data == null) {
       return (<NotFound/>);
@@ -46,9 +49,9 @@ class Plan extends Component {
                 <p>{this.status.error.message}</p>
               </div>);
     } else if(!!this.state.vote) {
-      return(<Vote planData={this.state.data}/>);
+      return(<Vote planData={this.state.data} getBack={this.getBack} />);
     } else if(!!this.state.info) {
-      return(<PlanInfo planData={this.state.data}/>);
+      return(<PlanInfo planData={this.state.data}  getBack={this.getBack}/>);
     } 
 
     return (

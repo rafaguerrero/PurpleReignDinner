@@ -7,8 +7,7 @@ const PlanSchema = new Schema(
   {
     id: { type: Number, unique: true, required : true }, // unique not working fine
     location: { type: Number,  required :true },
-    options: Array,
-    voters: Number,
+    restaurants: Array,
     votes: Array,
   },
   { 
