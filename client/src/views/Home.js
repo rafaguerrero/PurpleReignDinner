@@ -3,29 +3,13 @@ import { Link } from "react-router-dom";
 
 class Home extends Component {
   state = {
-    data: [],
-    intervalIsSet: false
+    data: []
   };
 
   componentDidMount() {
-    this.getDataFromDb();
-    if (!this.state.intervalIsSet) {
-      let interval = setInterval(this.getDataFromDb, 1000);
-      this.setState({ intervalIsSet: interval });
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.state.intervalIsSet) {
-      clearInterval(this.state.intervalIsSet);
-      this.setState({ intervalIsSet: null });
-    }
-  }
-
-  getDataFromDb = () => {
     fetch("http://localhost:3001/api/getAllData")
-      .then(data => data.json())
-      .then(res => this.setState({ data: res.data }));
+        .then(data => data.json())
+        .then(res => this.setState({ data: res.data }));
   };
 
   render() {
