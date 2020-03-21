@@ -11,8 +11,6 @@ class Vote extends Component {
   };
 
   start = () => {
-    console.log("Data : ", this.props.planData);
-
     this.setState({ active: 0 });
   }
 

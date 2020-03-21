@@ -19,17 +19,17 @@ class PlanInfo extends Component {
               data.restaurants.map(dat => {
                 index++;
 
-                return (<li class="sublist" 
+                return (<li className="sublist" 
                             style={{marginLeft : "30px"}}
                             key={data.name}>
-                          {dat.name} - {this.countLikes(index)} / {data.votes.length}
+                          {this.countLikes(index)} / {data.votes.length} - {dat.name}
                         </li>
               )}
             )}
             <li>Votes : {data.votes.length}</li>
             {(data.votes.length > 0) &&
               data.votes.map(dat => (
-                <li class="sublist" 
+                <li className="sublist" 
                     style={{marginLeft : "30px"}}
                     key={data.name}>
                   {dat.name}

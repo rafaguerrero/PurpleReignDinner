@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
 const PlanSchema = new Schema(
   {
     id: { type: Number, unique: true, required : true }, // unique not working fine
-    location: { type: Number,  required :true },
+    location: { type: String,  required :true },
     restaurants: Array,
     votes: Array,
   },
