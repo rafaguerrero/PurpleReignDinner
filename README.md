@@ -1,3 +1,3 @@
 # PurpleReignDinner
 
-TEMP
+Purple Reign Dinner
