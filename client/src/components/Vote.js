@@ -1,47 +1,97 @@
 import React, { Component } from "react";
 import axios from 'axios';
+import Match from "./Match";
 import Chip from "./Chip";
+
+
+const calculateNewVotes = (votes, like, name) => {
+  let newVotes = [],
+      nameFound = false;
+
+  for(var i = 0; i < votes.length; i++) {
+    let current = votes[i];
+    
+    if(votes[i].name == name) {
+      current.votes.push(like);
+      nameFound = true;
+    }
+
+    newVotes.push(current);
+  }
+
+  if(!nameFound) {
+    newVotes.push({
+      name : name,
+      votes : [like]
+    }) 
+  }
+
+  return newVotes;
+}
 
 class Vote extends Component {
   state = {
     name: null,
     active: null,
-    dataSaved: false,
-    current: []
+    saving: false
   };
 
   start = () => {
     this.setState({ active: 0 });
   }
 
-  vote = (like) => {
-    this.state.current.push(like);
-    this.setState({ active: this.state.active + 1 });
-
-    if(this.state.active == this.props.planData.restaurants.length - 1) {
-      this.finish();
+  checkMatches = (votes) => {
+    let current = this.state.active - 1;
+    let matches = votes.filter(person => person.votes.length > current && 
+                                          person.votes[current]).length
+  
+    if(matches > 1 && matches === votes.length) {
+      this.setState({ match: this.props.planData.restaurants[current]})
     }
   }
 
-  finish = () => {
-    let planData = this.props.planData,
-        votes = planData.votes;
-
-    votes.push({
-      name : this.state.name,
-      votes : this.state.current
+  vote = (like) => {
+    this.setState({ 
+      saving: true,
+      match: null
     })
 
-    axios.post('http://localhost:3001/api/updateData', {
-      id: planData._id,
-      update: { votes : votes },
+    this.props.updateData().then(() => {
+      this.setState({ active: this.state.active + 1 });
+
+      let planData = this.props.planData,
+          votes = planData.votes;
+
+      if(votes.length == 0) {
+        votes.push({
+          name : this.state.name,
+          votes : [like]
+        })
+      } else {
+        votes = calculateNewVotes(votes, like, this.state.name);
+      }
+
+      this.checkMatches(votes)
+
+      axios.post('http://localhost:3001/api/updateData', {
+        id: planData._id,
+        update: { votes : votes },
+      }).then(() => {
+        this.setState({ saving: false })
+      })
     })
-    .then(() => this.setState({ dataSaved: true }))
   }
 
   render() {
     let restaurants = this.props.planData.restaurants,
         active = this.state.active;
+
+    if(this.state.saving) {
+      return (<div>
+        <h3>Saving Data</h3>
+        <p>Please wait a second</p>
+      </div>)  
+    }
 
     if(active == null) {
       return (
@@ -59,16 +109,12 @@ class Vote extends Component {
       );
     } else if(active < restaurants.length) {
       return (
-        <Chip restaurant={restaurants[active]} vote={this.vote}/>
+        <div>
+          {(this.state.match != null) && <Match restaurant={this.state.match}/>}
+          <Chip restaurant={restaurants[active]} vote={this.vote}/>
+        </div>
       );
     } else {
-      if(!this.state.dataSaved) {
-        return (<div>
-          <h3>Saving Data</h3>
-          <p>Please wait a second</p>
-        </div>)  
-      }
-
       return (<div>
         <h3>Congrats!</h3>
         <p>You have voted everything</p>

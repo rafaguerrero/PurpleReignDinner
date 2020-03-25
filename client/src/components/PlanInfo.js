@@ -22,7 +22,7 @@ class PlanInfo extends Component {
                 return (<li className="sublist" 
                             style={{marginLeft : "30px"}}
                             key={data.name}>
-                          {this.countLikes(index)} / {data.votes.length} - {dat.name}
+                          {this.countLikes(index)} - {dat.name}
                         </li>
               )}
             )}

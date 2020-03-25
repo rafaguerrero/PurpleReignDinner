@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from 'axios';
 import NotFound from "./NotFound";
 import Vote from "../components/Vote";
+import GroupVote from "../components/GroupVote";
 import PlanInfo from "../components/PlanInfo";
 
 class Plan extends Component {
@@ -12,32 +13,36 @@ class Plan extends Component {
     error: null
   };
 
-  componentDidMount() {
+  updateData = () => {
     const { match: { params } } = this.props;
 
     this.setState({ id: params.id });
 
-    axios.post('http://localhost:3001/api/getData', {
-      id: params.id,
-    })
-    .then(res => { return !!res.json ? res.json() : res.data; })
-    .then((res) => {
-      this.setState({ 
-        data: res.data,
-        success: res.success,
-        error: res.error
-      });
-    }).catch((error) => {
-      this.setState({ 
-        data: null,
-        success: false,
-        error: error
-      }); 
-    })
+    return axios.post('http://localhost:3001/api/getData', {
+            id: params.id,
+          })
+          .then(res => { return !!res.json ? res.json() : res.data; })
+          .then((res) => {
+            this.setState({ 
+              data: res.data,
+              success: res.success,
+              error: res.error
+            });
+          }).catch((error) => {
+            this.setState({ 
+              data: null,
+              success: false,
+              error: error
+            }); 
+          })
+  }
+
+  componentDidMount() {
+      this.updateData();
   }
 
   getBack = () => {
-    this.setState({ vote: false, info: false });
+    this.setState({ vote: false, info: false, group: false });
   }
 
   render() {
@@ -49,7 +54,9 @@ class Plan extends Component {
                 <p>{this.status.error.message}</p>
               </div>);
     } else if(!!this.state.vote) {
-      return(<Vote planData={this.state.data} getBack={this.getBack} />);
+      return(<Vote planData={this.state.data} updateData={this.updateData} getBack={this.getBack} />);
+    } else if(!!this.state.group) {
+      return(<GroupVote planData={this.state.data} getBack={this.getBack} />);
     } else if(!!this.state.info) {
       return(<PlanInfo planData={this.state.data}  getBack={this.getBack}/>);
     } 
@@ -58,8 +65,11 @@ class Plan extends Component {
       <div>
         <ul>
           <li>
-            <button onClick={() => this.setState({vote : true})}>Vote</button>
+            <button onClick={() => this.setState({vote : true})}>Couples Vote</button>
           </li>
+          <li>
+            <button onClick={() => this.setState({group : true})}>Group Vote</button>
+          </li> 
           <li>
             <button onClick={() => this.setState({info : true})}>Info</button>
           </li>
