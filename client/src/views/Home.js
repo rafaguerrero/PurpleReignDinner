@@ -44,10 +44,10 @@ class Home extends Component {
         <div class="createNew">
           <Link to="/new_plan">Create new dinner plan</Link>
         </div>
-        <div class="homeButton hidden allButton">
+        <div class="button hidden allButton">
           <button onClick={() => this.setState({check : true})}>Check all current plans</button>
         </div>
-        <div class="homeButton hidden deleteButton">
+        <div class="button hidden deleteButton">
           <button onClick={() => this.deleteAllPlans()}>Delete all current plans</button>
         </div>
       </div>

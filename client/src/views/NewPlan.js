@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import axios from 'axios';
-import { Link } from "react-router-dom";
 import RestaurantsJson from "../_temp/RestaurantsAPI";
-
+import "../css/NewPlan.css"
 
 const LOCATION_API_SRC = "https://tripadvisor1.p.rapidapi.com/locations/search?limit=1&query=";
 const RESTAURANT_API_SRC = "https://tripadvisor1.p.rapidapi.com/restaurants/list?limit=10&currency=USD&lang=en_US&location_id=";
@@ -17,7 +16,6 @@ const API_INFO = {
 class NewPlan extends Component {
   state = {
     location: null,
-    success: false,
     error: null,
     id: 0,
     loading: false
@@ -70,11 +68,14 @@ class NewPlan extends Component {
     })
     .then(res => { return !!res.json ? res.json() : res.data; })
     .then((res) => {
-      this.setState({ 
-        loading: false,
-        success: res.success, 
-        error: res.error && res.error.message 
-      });
+      if(res.success) {
+        window.location.href = `/plan/${this.state.id}`;
+      } else {
+        this.setState({ 
+          loading: false,
+          error: res.error && res.error.message 
+        });
+      }
     })  
   }
 
@@ -89,7 +90,6 @@ class NewPlan extends Component {
       id: this.createId(),
       location: location,
       loading: true,
-      success: false,
       error: false
     });
 
@@ -100,33 +100,29 @@ class NewPlan extends Component {
 
   render() {
     return (
-      <div>
+      <div id="new_plan">
         <h2>Create New Plan</h2>
 
-        <div style={{ padding: "10px" }}>
-          <input
-              type="text"
-              style={{ width: "200px" }}
+        <div class="form">
+          <input type="text" className="input location"
               onChange={e => this.setState({ location: e.target.value })}
-              placeholder="Put the zip code"
-            />
-          <button onClick={() => this.createNewPlan(this.state.location)}>CREATE DINNER PLAN</button>
+              placeholder="Put the zip code" />
+
+          <div class="button">
+            <button onClick={() => this.createNewPlan(this.state.location)}>CREATE DINNER PLAN</button>
+          </div>
         </div>
 
-        {this.state.loading && (
-            <p>Creating new plan</p>
-        )}
+        {(!!this.state.loading || !!this.state.error) && (
+          <div class="message">
+            {!!this.state.loading && (<p>Creating new plan</p>)}
 
-        {this.state.success && (
-            <Link to={`/plan/${this.state.id}`}> 
-              Create new plan successfull - {this.state.id} 
-            </Link>
-        )}
-
-        {(!!this.state.error) && (
-          <div>
-            <p>There was an error on creation please try again</p>
-            <p>{this.state.error}</p>
+            {(!!this.state.error) && (
+              <span>
+                <p>There was an error on creation please try again</p>
+                <p>{this.state.error}</p>
+              </span>
+            )}
           </div>
         )}
       </div>

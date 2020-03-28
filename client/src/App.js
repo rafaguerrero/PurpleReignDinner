@@ -5,6 +5,7 @@ import Plan from "./views/Plan";
 import Home from "./views/Home";
 import NewPlan from "./views/NewPlan";
 import NotFound from "./views/NotFound";
+import "./css/App.css";
 
 class App extends Component {
   render() {

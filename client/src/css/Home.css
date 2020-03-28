@@ -14,15 +14,7 @@
       height: 50px;
       text-align: center;
       line-height: 50px; }
-  #home .homeButton {
-    width: 45%;
-    background-color: #CCC;
-    border-radius: 10px;
-    border: 1px solid black;
-    height: 30px;
-    line-height: 30px;
-    text-align: center; }
-    #home .homeButton.allButton {
-      float: left; }
-    #home .homeButton.deleteButton {
-      float: right; }
+  #home .button.allButton {
+    float: left; }
+  #home .button.deleteButton {
+    float: right; }
