@@ -32,22 +32,22 @@ class Home extends Component {
     }
 
     return (
-      <div>
-        <h2>Current Dinner Plans</h2>
+      <div id="home">
+        <img class="mainLogo" src="/logos/purple_reign.jpeg"/>
 
         {this.state.loading && (
-          <div>
-            <h1>We are cleaning the database, give us a second</h1>
+          <div clas="loading">
+            <h4>We are cleaning the database, give us a second</h4>
           </div> 
         )}
 
-        <div>
-          <Link to="/new_plan">Create new plan</Link>
+        <div class="createNew">
+          <Link to="/new_plan">Create new dinner plan</Link>
         </div>
-        <div>
+        <div class="homeButton hidden allButton">
           <button onClick={() => this.setState({check : true})}>Check all current plans</button>
         </div>
-        <div>
+        <div class="homeButton hidden deleteButton">
           <button onClick={() => this.deleteAllPlans()}>Delete all current plans</button>
         </div>
       </div>
