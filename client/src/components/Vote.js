@@ -4,7 +4,7 @@ import Match from "./Match";
 import Chip from "./Chip";
 
 
-const calculateNewVotes = (votes, like, name) => {
+const calculateNewVotes = (votes, like, name) => {  
   let newVotes = [],
       nameFound = false;
 
@@ -29,6 +29,21 @@ const calculateNewVotes = (votes, like, name) => {
   return newVotes;
 }
 
+const updateVotes = (planData, like) => {
+  let votes = planData.votes;
+
+  if(votes.length == 0) {
+    votes.push({
+      name : this.state.name,
+      votes : [like]
+    })
+  } else {
+    votes = calculateNewVotes(votes, like, this.state.name);
+  }
+
+  return votes;
+}
+
 class Vote extends Component {
   state = {
     name: null,
@@ -41,13 +56,25 @@ class Vote extends Component {
   }
 
   checkMatches = (votes) => {
-    let current = this.state.active - 1;
+    let current = this.state.active;
     let matches = votes.filter(person => person.votes.length > current && 
                                           person.votes[current]).length
   
     if(matches > 1 && matches === votes.length) {
       this.setState({ match: this.props.planData.restaurants[current]})
     }
+  }
+
+  saveVote = (planData, votes) => {
+    axios.post('http://localhost:3001/api/updateData', {
+          id: planData._id,
+          update: { votes : votes },
+      }).then(() => {
+        this.setState({ 
+          saving: false,
+          active: this.state.active + 1
+        })
+      })
   }
 
   vote = (like) => {
@@ -57,28 +84,11 @@ class Vote extends Component {
     })
 
     this.props.updateData().then(() => {
-      this.setState({ active: this.state.active + 1 });
-
-      let planData = this.props.planData,
-          votes = planData.votes;
-
-      if(votes.length == 0) {
-        votes.push({
-          name : this.state.name,
-          votes : [like]
-        })
-      } else {
-        votes = calculateNewVotes(votes, like, this.state.name);
-      }
-
-      this.checkMatches(votes)
-
-      axios.post('http://localhost:3001/api/updateData', {
-        id: planData._id,
-        update: { votes : votes },
-      }).then(() => {
-        this.setState({ saving: false })
-      })
+      const planData = this.props.planData,
+            votes = updateVotes(planData, like);
+      
+      this.checkMatches(votes);
+      this.saveVote(planData, votes);
     })
   }
 

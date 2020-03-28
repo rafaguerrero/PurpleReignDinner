@@ -64,6 +64,13 @@ router.delete('/deleteData', (req, res) => {
   Plan.findByIdAndRemove(id, (err) => {
     if (err) return res.send(err);
     return res.json({ success: true });
+  }); 
+});
+
+router.delete('/deleteAllData', (req, res) => {
+  Plan.remove({}, (err) => {
+    if (err) return res.send(err);
+    return res.json({ success: true });
   });
 });
 

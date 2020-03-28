@@ -1,36 +1,54 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import "../css/Home.css";
+import AllPlans from "./AllPlans"
+import axios from 'axios';
 
 class Home extends Component {
   state = {
-    data: []
+    check: false,
+    loading: false
   };
 
-  componentDidMount() {
-    fetch("http://localhost:3001/api/getAllData")
-        .then(data => data.json())
-        .then(res => this.setState({ data: res.data }));
-  };
+  deleteAllPlans = () => {
+    this.setState({loading : true})
+
+    axios.delete("http://localhost:3001/api/deleteAllData", {})
+        .then(res => {
+          if(res.data.success) this.setState({ loading: false })
+          else this.setState({ error: true })
+        });
+  }
+
+  getBack = () => {
+    this.setState({check : false})
+  }
 
   render() {
-    const { data } = this.state;
+    if(this.state.error) {
+      return (<h1>There was an error while cleaning the databese</h1>)
+    } else if(this.state.check) {
+      return (<AllPlans getBack={this.getBack} />)
+    }
 
     return (
       <div>
         <h2>Current Dinner Plans</h2>
-        <ul>
-          {data.length <= 0
-            ? "NO DINNER PLANS YET"
-            : data.map(dat => (
-                <li style={{ padding: "10px" }} key={data.id}>
-                  <Link to={`/plan/${dat.id}`}>
-                    Plan -> {dat.id}
-                  </Link>
-                </li>
-          ))}
-        </ul>
-        <div style={{ padding: "10px" }}>
-          <Link to="/new_plan">New Plan</Link>
+
+        {this.state.loading && (
+          <div>
+            <h1>We are cleaning the database, give us a second</h1>
+          </div> 
+        )}
+
+        <div>
+          <Link to="/new_plan">Create new plan</Link>
+        </div>
+        <div>
+          <button onClick={() => this.setState({check : true})}>Check all current plans</button>
+        </div>
+        <div>
+          <button onClick={() => this.deleteAllPlans()}>Delete all current plans</button>
         </div>
       </div>
     );
